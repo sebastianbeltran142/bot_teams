@@ -11,7 +11,7 @@ import time as tm
 
 #Configuraciones varias y opcionales
 now = datetime.now()
-print(datetime.now(),'Gracias por ejecutar este script creado por HDTC. Puede cerrar el proceso con Ctrl + C en cualquier momento. Ver: 1.1.3')
+print(datetime.now(),'Gracias por ejecutar este script creado por HDTC. Puede cerrar el proceso con Ctrl + C en cualquier momento. Ver: 1.1.4')
 print(datetime.now(),'Script ejecutado por el usuario')
 
 
@@ -29,9 +29,7 @@ def inicio_sesion_teams():
     driver.get(url1)
     print(datetime.now(), 'Cargando página web. Un momento, por favor...')
     complete_cargue = '//*[@id="i0116"]'
-    element = WebDriverWait(driver,10).until(
-        ec.presence_of_element_located((By.XPATH,complete_cargue))
-    )
+    element = WebDriverWait(driver,10).until(ec.presence_of_element_located((By.XPATH,complete_cargue)))
     print(datetime.now(), 'Navegador web iniciada')
     return element
 inicio_sesion_teams() 
@@ -39,42 +37,35 @@ print(datetime.now(), 'Página web', url1, 'cargada correctamente')
 
 # Autenticación sesión por el usuario
 def test_teams_start():
+    WebDriverWait(driver, 20).until(ec.presence_of_element_located((By.NAME, "loginfmt"))).send_keys("14ct222227@educacioncpe.gov.co")
     tm.sleep(1)
-
-    driver.find_element(By.NAME,"loginfmt").send_keys("14ct222227@educacioncpe.gov.co")
     driver.find_element(By.ID, "idSIButton9").click()
     print(datetime.now(),"Proceso ejecutado user")
-    tm.sleep(1.5)
-
-    driver.find_element(By.NAME,"passwd").send_keys("Educacion2015")
-    driver.find_element(By.ID,"idSIButton9").click()
-    tm.sleep(1.5)
-
-    driver.find_element(By.ID,"idBtn_Back").click()
+    
+    WebDriverWait(driver, 20).until(ec.presence_of_element_located((By.NAME, "passwd"))).send_keys("Educacion2015")
+    tm.sleep(1)
+    driver.find_element(By.CSS_SELECTOR, "#idSIButton9").click()
     print(datetime.now(),"Proceso ejecutado pass")
+    
+    WebDriverWait(driver, 20).until(ec.presence_of_element_located((By.ID, "idBtn_Back"))).click()
     print(datetime.now(),"Inicio de sesión terminada, procedimiento para resetear cuenta")
 test_teams_start()
 
 def configure_sesion():
-    element = WebDriverWait(driver, 30).until(
-        ec.presence_of_element_located((By.CSS_SELECTOR, "#control-input"))
-    )
+    element = WebDriverWait(driver, 30).until(ec.presence_of_element_located((By.CSS_SELECTOR, "#control-input")))
     return element
 configure_sesion()
 
-def prepare_sesion():
-    driver.find_element(By.CSS_SELECTOR,"#personDropdown").click()
-    tm.sleep(1)
-    driver.find_element(By.CLASS_NAME,"ts-sym.profile-action.profile-set-presence-button").click()
-    tm.sleep(1)
-    driver.find_element(By.CSS_SELECTOR,"body > div.popover.minwidth-md.maxwidth-md.popover.app-default-menu.settings-presence-popover.am-fade.bottom > ul > li:nth-child(10) > button").click()
-    tm.sleep(1)
+# Reinicio del estado del usuario controlado por bot
 
-    driver.find_element(By.ID,"app-bar-86fcd49b-61a2-4701-b771-54728cd291fb").click()
-    print(datetime.now(),"Proceso de preparación de la cuenta terminada")
+def prepare_sesion():
+    WebDriverWait(driver, 30).until(ec.presence_of_element_located((By.CSS_SELECTOR, "#personDropdown"))).click()
+    WebDriverWait(driver, 30).until(ec.presence_of_element_located((By.CSS_SELECTOR, ".icons-dropdown-small"))).click()
+    WebDriverWait(driver, 30).until(ec.presence_of_element_located((By.CSS_SELECTOR, "body > div.popover.minwidth-md.maxwidth-md.popover.app-default-menu.settings-presence-popover.am-fade.bottom > ul > li:nth-child(10) > button"))).click()
+    WebDriverWait(driver, 30).until(ec.presence_of_element_located((By.ID, "app-bar-86fcd49b-61a2-4701-b771-54728cd291fb"))).click()
+    print(datetime.now(),"Se reinicia el estado de la cuenta al estado actual completada")
     tm.sleep(15)
     print('Servicio bot listo para el envío de mensajes. Se debe tener en cuenta el rendimiento del equipo vis conectividad')
-
 prepare_sesion()
 
 
@@ -92,9 +83,10 @@ def chat(msg_nvo_finish: str):
             try:
                 print(datetime.now(),'🤖 usuario "',user,'" dice:...', msg_nvo_finish)
                 driver.find_element(By.CLASS_NAME, 'cle-item').click()
-                pg.typewrite('(hi) Bienvenido al soporte de la mesa de servicios de la empresa, le escribe Dani (smilerobot). Estas son las opciones *super flash* que me fueron configurados:')
-                tm.sleep(2.2)
-                pg.hotkey('enter')
+                print(datetime.now(),'🤖 usuario "',user,'" dice:...', msg_nvo_finish)
+                driver.find_element(By.CLASS_NAME, 'cle-item').click()
+                pg.typewrite('(hi) Bienvenido al soporte de la mesa de servicios de la empresa, le escribe Dani (smilerobot). Estas son las opciones _super flash_ que me fueron configurados:')
+                pg.hotkey('shift','enter')
                 pg.typewrite('(keycapone)(keycapasterisk) Clave wifi invitados de la semana.')
                 pg.hotkey('shift','enter')
                 pg.typewrite('(keycaptwo)(keycapasterisk) Cambiar clave del correo corporativo y sistema operativo.')
@@ -102,11 +94,10 @@ def chat(msg_nvo_finish: str):
                 pg.typewrite('(keycapthree)(keycapasterisk) Desbloquear cuenta de terceros.')
                 pg.hotkey('shift','enter')
                 pg.typewrite('(keycapfour)(keycapasterisk) Hablar con un representante de la mesa de servicios.')
-                tm.sleep(3)
+                pg.hotkey('shift','enter')
+                pg.typewrite('(keyboard) Digite cualquiera de las sugerencias incluyendo el asterisco posterior al numeral.')
                 pg.hotkey('enter')
-                tm.sleep(1)
-                pg.typewrite('(keyboard) Digite cualquiera de las opciones disponibles incluyendo el asterisco.')
-                pg.hotkey('enter')
+                tm.sleep(5)
                 print(datetime.now(),'✅ Mensaje enviado exitoso.')
                 tm.sleep(2)
             except:
@@ -117,8 +108,7 @@ def chat(msg_nvo_finish: str):
                 print(datetime.now(),'🤖 usuario "',user,'" dice:...', msg_nvo_finish)
                 driver.find_element(By.CLASS_NAME, 'cle-item').click()
                 pg.typewrite('(hi) Bienvenido al soporte de la mesa de servicios de la empresa, le escribe Dani (smilerobot). Estas son las opciones *super flash* que me fueron configurados:')
-                tm.sleep(2.2)
-                pg.hotkey('enter')
+                pg.hotkey('shift','enter')
                 pg.typewrite('(keycapone)(keycapasterisk) Clave wifi invitados de la semana.')
                 pg.hotkey('shift','enter')
                 pg.typewrite('(keycaptwo)(keycapasterisk) Cambiar clave del correo corporativo y sistema operativo.')
@@ -126,11 +116,10 @@ def chat(msg_nvo_finish: str):
                 pg.typewrite('(keycapthree)(keycapasterisk) Desbloquear cuenta de terceros.')
                 pg.hotkey('shift','enter')
                 pg.typewrite('(keycapfour)(keycapasterisk) Hablar con un representante de la mesa de servicios.')
-                tm.sleep(3)
+                pg.hotkey('shift','enter')
+                pg.typewrite('(keyboard) Digite cualquiera de las sugerencias incluyendo el asterisco posterior al numeral.')
                 pg.hotkey('enter')
-                tm.sleep(1)
-                pg.typewrite('(keyboard) Seleccione cualquiera de las opciones disponibles.')
-                pg.hotkey('enter')
+                tm.sleep(5)
                 print(datetime.now(),'✅ Mensaje enviado exitoso.')
                 tm.sleep(2)
             except:
@@ -141,8 +130,7 @@ def chat(msg_nvo_finish: str):
                 print(datetime.now(),'🤖 usuario "',user,'" dice:...', msg_nvo_finish)
                 driver.find_element(By.CLASS_NAME, 'cle-item').click()
                 pg.typewrite('(hi) Bienvenido al soporte de la mesa de servicios de la empresa, le escribe Dani (smilerobot). Estas son las opciones *super flash* que me fueron configurados:')
-                tm.sleep(2.2)
-                pg.hotkey('enter')
+                pg.hotkey('shift','enter')
                 pg.typewrite('(keycapone)(keycapasterisk) Clave wifi invitados de la semana.')
                 pg.hotkey('shift','enter')
                 pg.typewrite('(keycaptwo)(keycapasterisk) Cambiar clave del correo corporativo y sistema operativo.')
@@ -150,11 +138,10 @@ def chat(msg_nvo_finish: str):
                 pg.typewrite('(keycapthree)(keycapasterisk) Desbloquear cuenta de terceros.')
                 pg.hotkey('shift','enter')
                 pg.typewrite('(keycapfour)(keycapasterisk) Hablar con un representante de la mesa de servicios.')
-                tm.sleep(3)
+                pg.hotkey('shift','enter')
+                pg.typewrite('(keyboard) Digite cualquiera de las sugerencias incluyendo el asterisco posterior al numeral.')
                 pg.hotkey('enter')
-                tm.sleep(1)
-                pg.typewrite('(keyboard) Seleccione cualquiera de las opciones disponibles.')
-                pg.hotkey('enter')
+                tm.sleep(5)
                 print(datetime.now(),'✅ Mensaje enviado exitoso.')
                 tm.sleep(2)
             except:
@@ -165,8 +152,7 @@ def chat(msg_nvo_finish: str):
                 print(datetime.now(),'🤖 usuario "',user,'" selecciona la opción:...', msg_nvo_finish)
                 driver.find_element(By.CLASS_NAME, 'cle-item').click()
                 pg.typewrite(';) De acuerdo, se ha enviado de nuevo a las opciones iniciales. Estas son las opciones *super flash* que me fueron configurados:')
-                tm.sleep(2.2)
-                pg.hotkey('enter')
+                pg.hotkey('shift','enter')
                 pg.typewrite('(keycapone)(keycapasterisk) Clave wifi invitados de la semana.')
                 pg.hotkey('shift','enter')
                 pg.typewrite('(keycaptwo)(keycapasterisk) Cambiar clave del correo corporativo y sistema operativo.')
@@ -174,11 +160,10 @@ def chat(msg_nvo_finish: str):
                 pg.typewrite('(keycapthree)(keycapasterisk) Desbloquear cuenta de terceros.')
                 pg.hotkey('shift','enter')
                 pg.typewrite('(keycapfour)(keycapasterisk) Hablar con un representante de la mesa de servicios.')
-                tm.sleep(3)
+                pg.hotkey('shift','enter')
+                pg.typewrite('(keyboard) Digite cualquiera de las sugerencias incluyendo el asterisco posterior al numeral.')
                 pg.hotkey('enter')
-                tm.sleep(1)
-                pg.typewrite('(keyboard) Digite cualquiera de las opciones disponibles incluyendo el asterisco.')
-                pg.hotkey('enter')
+                tm.sleep(5)
                 print(datetime.now(),'✅ Mensaje enviado exitoso.')
                 tm.sleep(2)
             except:
@@ -188,9 +173,8 @@ def chat(msg_nvo_finish: str):
             try:
                 print(datetime.now(),'🤖 usuario "',user,'" selecciona la opción:...', msg_nvo_finish)
                 driver.find_element(By.CLASS_NAME, 'cle-item').click()
-                pg.typewrite(';) De acuerdo, la clave de wifi de la semana es pepitoperez*, espero funcione')
-                tm.sleep(1)
-                pg.hotkey('enter')
+                pg.typewrite(';) De acuerdo, la clave de wifi de la semana es *pepitoperez**, espero funcione')
+                pg.hotkey('shift','enter')
                 pg.typewrite(':) Si ha sido satisfactoria la respuesta entregada, puede agradecerme en cualquier momento, de lo contrario, digite (keycapzero)(keycapasterisk) para volver al menu principal, o (keycapfour)(keycapasterisk) para hablar con un representante de la mesa de servicios.')
                 pg.hotkey('enter')
                 print(datetime.now(),'✅ Mensaje enviado exitoso.')
@@ -203,9 +187,8 @@ def chat(msg_nvo_finish: str):
                 print(datetime.now(),'🤖 usuario "',user,'" selecciona la opción:...', msg_nvo_finish)
                 driver.find_element(By.CLASS_NAME, 'cle-item').click()
                 pg.typewrite(';) De acuerdo, para cambiar la clave de corporativo y sistema operativo ingrese en la opción cambiar contrasena y luego cambia la clave. Este video muestra el procedimiento para cambio, por favor de click en el siguiente enlace')
-                tm.sleep(2)
                 pg.hotkey('enter')
-                tm.sleep(1)
+                tm.sleep(2)
                 pg.typewrite('https://www.youtube.com/watch?v=TNTY71tWW1k&t=3s')
                 pg.hotkey('enter')
                 tm.sleep(1)
@@ -221,8 +204,8 @@ def chat(msg_nvo_finish: str):
                 print(datetime.now(),'🤖 usuario "',user,'" selecciona la opción:...', msg_nvo_finish)
                 driver.find_element(By.CLASS_NAME, 'cle-item').click()
                 pg.typewrite(';) De acuerdo, Se ha notificado al profesional para el desbloqueo de la cuenta terceros. Por favor, intente acceder dentro de dos minutos')
-                tm.sleep(1.5)
                 pg.hotkey('enter')
+                tm.sleep(1.5)
                 pg.typewrite(':) Si ha sido satisfactoria la respuesta entregada, puede agradecerme en cualquier momento, de lo contrario, digite (keycapzero)(keycapasterisk) para volver al menu principal, o (keycapfour)(keycapasterisk) para hablar con un representante de la mesa de servicios.')
                 pg.hotkey('enter')
                 print(datetime.now(),'✅ Mensaje enviado exitoso.')
@@ -236,8 +219,8 @@ def chat(msg_nvo_finish: str):
                 print(datetime.now(),'🤖 usuario "',user,'" selecciona la opción:...', msg_nvo_finish)
                 driver.find_element(By.CLASS_NAME, 'cle-item').click()
                 pg.typewrite(';) De acuerdo, se ha notificado a los profesionales de la mesa de servicios, por favor, estar pendiente En caso de finalizar, por favor agradecer al finalizar el servicio con el agente que atienda su solicitud')
-                tm.sleep(2.5)
                 pg.hotkey('enter')
+                tm.sleep(2)
                 print(datetime.now(),'✅ Mensaje enviado exitoso.')
                 tm.sleep(2)
             except:
@@ -248,11 +231,11 @@ def chat(msg_nvo_finish: str):
                 print(datetime.now(),'🤖 usuario "',user,'" dice:...', msg_nvo_finish)
                 driver.find_element(By.CLASS_NAME, 'cle-item').click()
                 pg.typewrite('(thanks) Agradecemos a usted por contactarnos. Recuerda que le escribio Dani Bot (smilerobot) deseandole un excelente dia productvo. Al finalizar el servicio, por favor lo invito a realizar la encuesta del servicio y regalenos (star)(star)(star)(star)(star)')
+                pg.hotkey('enter')
                 tm.sleep(3)
-                pg.hotkey('enter')
                 pg.typewrite('Chat cerrado (handshake)')
-                tm.sleep(0.5)
                 pg.hotkey('enter')
+                tm.sleep(0.5)
                 print(datetime.now(),'✅ Mensaje enviado exitoso.')
                 tm.sleep(2)
             except:
@@ -261,9 +244,9 @@ def chat(msg_nvo_finish: str):
         elif msg_nvo_finish.__contains__('/bot_ver'):
             try:
                 print(datetime.now(),'🤖 Operador "',user,'" ejecutó comando', msg_nvo_finish)
-                pg.typewrite('HDTC Bot para TEAMS Ver: 1.1.3')
-                tm.sleep(0.5)
+                pg.typewrite('HDTC Bot para TEAMS Ver: 1.1.4')
                 pg.hotkey('enter')
+                tm.sleep(0.5)
                 print(datetime.now(),'✅ Procedimiento realizado con éxito.')
             except:
                 pass
@@ -272,8 +255,8 @@ def chat(msg_nvo_finish: str):
             try:
                 print(datetime.now(),'🤖 Operador "',user,'" ejecutó comando', msg_nvo_finish)
                 pg.typewrite('Contacte al soporte técnico Profesional HDTC 3125596416 o escibir al correo electronico serviciohdtecco@gmail.com. Bot en actualizaciones')
-                tm.sleep(1)
                 pg.hotkey('enter')
+                tm.sleep(1)
                 print(datetime.now(),'✅ Procedimiento realizado con éxito.')
             except:
                 pass
@@ -282,8 +265,8 @@ def chat(msg_nvo_finish: str):
             try:
                 print(datetime.now(),'🤖 Operador "',user,'" ejecutó comando', msg_nvo_finish)
                 pg.typewrite('Agente bot despierto')
-                tm.sleep(0.5)
                 pg.hotkey('enter')
+                tm.sleep(0.5)
                 print(datetime.now(),'✅ Procedimiento realizado con éxito.')
             except:
                 pass
@@ -293,9 +276,9 @@ def chat(msg_nvo_finish: str):
                 print(datetime.now(),'🤖 Operador "',user,'" ejecutó comando', msg_nvo_finish)
                 driver.refresh()
                 tm.sleep(16)
-                pg.typewrite('servicio remoto reseteada')
-                tm.sleep(0.5)
+                pg.typewrite('servicio remoto reiniciado')
                 pg.hotkey('enter')
+                tm.sleep(0.5)
                 print(datetime.now(),'✅ Procedimiento realizado con éxito.')
             except:
                 pass
@@ -304,7 +287,6 @@ def chat(msg_nvo_finish: str):
             try:
                 print(datetime.now(),'🤖 Operador "',user,'" ejecutó comando', msg_nvo_finish)
                 pg.typewrite('Se ejecuta el apagado del bot por solicitud del operador remoto')
-                tm.sleep(0.5)
                 pg.hotkey('enter')
                 tm.sleep(2)
                 driver.quit()
